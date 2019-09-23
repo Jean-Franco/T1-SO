@@ -133,8 +133,74 @@ int main(int argc, char const *argv[]) {
   if (stat("/mnt/d/2019-2/so/t1/Jugador4", &verificar) == -1) {
     mkdir("/mnt/d/2019-2/so/t1/Jugador4", 0700);
   }
-  //se crean las cartas dentro de la carpeta mazo (chdir sirve para mover el proceso a la carpeta que se le pase)
+  //se crean las cartas dentro de la carpeta mazo (chdir sirve para mover el proceso a la direccion que se le pase)
   chdir("/mnt/d/2019-2/so/t1/mazo");
   crearCartas();
+  //repartir cartas
+  DIR *d;
+  struct dirent *sd;
+  int cont=0;
+  int numCartas=109;
+  while(cont<4){
+    int j=0;
+    numCartas=numCartas-6;
+    while(j<7){
+      int i=0;
+      int random=rand()%numCartas;
+      d=opendir("."); //abrimos el directorio en el que nos encontramos (en este caso Mazo)
+      if(d==NULL){
+        printf("ERROR FATAL: No se pudo abrir el directorio\n");
+        exit(1);
+      }
+      while( (sd=readdir(d)) != NULL ){
+        if(random==i){
+          //movemos el archivo random al jugador correspondiente
+          if (cont==0) {
+            char nombreArchivo[100];
+            printf("Jugador 1 recibe la carta: \n");
+            printf("-> %s \n",sd->d_name);
+            strcpy(nombreArchivo,sd->d_name);
+            chdir("/mnt/d/2019-2/so/t1/Jugador1");
+            FILE *archivo=fopen(nombreArchivo,"w");
+            chdir("/mnt/d/2019-2/so/t1/mazo");
+            remove(nombreArchivo);
+          }
+          if (cont==1) {
+            char nombreArchivo[100];
+            printf("Jugador 2 recibe la carta: \n");
+            printf("-> %s \n",sd->d_name);
+            strcpy(nombreArchivo,sd->d_name);
+            chdir("/mnt/d/2019-2/so/t1/Jugador2");
+            FILE *archivo=fopen(nombreArchivo,"w");
+            chdir("/mnt/d/2019-2/so/t1/mazo");
+            remove(nombreArchivo);
+          }
+          if (cont==2) {
+            char nombreArchivo[100];
+            printf("Jugador 3 recibe la carta: \n");
+            printf("-> %s \n",sd->d_name);
+            strcpy(nombreArchivo,sd->d_name);
+            chdir("/mnt/d/2019-2/so/t1/Jugador3");
+            FILE *archivo=fopen(nombreArchivo,"w");
+            chdir("/mnt/d/2019-2/so/t1/mazo");
+            remove(nombreArchivo);
+          }
+          if (cont==3) {
+            char nombreArchivo[100];
+            printf("Jugador 4 recibe la carta: \n");
+            printf("-> %s \n",sd->d_name);
+            strcpy(nombreArchivo,sd->d_name);
+            chdir("/mnt/d/2019-2/so/t1/Jugador4");
+            FILE *archivo=fopen(nombreArchivo,"w");
+            chdir("/mnt/d/2019-2/so/t1/mazo");
+            remove(nombreArchivo);
+          }
+        }
+        i+=1;
+      }
+      j+=1;
+    }
+    cont+=1;
+  }
   return 0;
 }
