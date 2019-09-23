@@ -5,6 +5,11 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <string.h>
+#define mazo "mazo"
+#define jugador1 "jugador1"
+#define jugador2 "jugador2"
+#define jugador3 "jugador3"
+#define jugador4 "jugador4"
 
 typedef struct{
   char color[100];
@@ -32,9 +37,10 @@ void* crearCartas(){
   strcpy(arregloDos[7].numero,"Siete");
   strcpy(arregloDos[8].numero,"Ocho");
   strcpy(arregloDos[9].numero,"Nueve");
-
-  for (int i = 0; i < 10; ++i) {
-    for (int j = 0; j < 4; j++) {
+  int i;
+  int j;
+  for (i = 0; i < 10; ++i) {
+    for (j = 0; j < 4; j++) {
       if(i==0){
         char nombreArchivo[100];
         strcpy(nombreArchivo,arregloDos[i].numero);
@@ -61,7 +67,7 @@ void* crearCartas(){
     }
   }
   //creamos los +2 de cada color
-  for (int i = 0; i < 4; i++) {
+  for (i = 0; i < 4; i++) {
     char nombreArchivo[100];
     char nombreArchivo2[100];
     strcpy(nombreArchivo,"+2");
@@ -75,7 +81,7 @@ void* crearCartas(){
     FILE* archivo2=fopen(nombreArchivo2,"w");
   }
   //creamos los reversas
-  for (int i = 0; i < 4; i++) {
+  for (i = 0; i < 4; i++) {
     char nombreArchivo[100];
     char nombreArchivo2[100];
     strcpy(nombreArchivo,"Reversa");
@@ -89,7 +95,7 @@ void* crearCartas(){
     FILE* archivo2=fopen(nombreArchivo2,"w");
   }
   //creamos las cartas de salto
-  for (int i = 0; i < 4; i++) {
+  for (i = 0; i < 4; i++) {
     char nombreArchivo[100];
     char nombreArchivo2[100];
     strcpy(nombreArchivo,"Salto");
@@ -114,27 +120,28 @@ void* crearCartas(){
   FILE* archivo7=fopen("+4Negra3.txt","w");
   FILE* archivo8=fopen("+4Negra4.txt","w");
 }
+
 int main(int argc, char const *argv[]) {
   //aqui verificamos si existe la carpeta mencionada, si no existe, se crea
   struct stat verificar = {0};
-
-  if (stat("/mnt/d/2019-2/so/t1/Mazo", &verificar) == -1) {
-    mkdir("/mnt/d/2019-2/so/t1/Mazo", 0700);
+  int i, j;
+  if (stat(mazo, &verificar) == -1) {
+    mkdir(mazo, 0700);
   }
-  if (stat("/mnt/d/2019-2/so/t1/Jugador1", &verificar) == -1) {
-    mkdir("/mnt/d/2019-2/so/t1/Jugador1", 0700);
+  if (stat(jugador1, &verificar) == -1) {
+    mkdir(jugador1, 0777);
   }
-  if (stat("/mnt/d/2019-2/so/t1/Jugador2", &verificar) == -1) {
-    mkdir("/mnt/d/2019-2/so/t1/Jugador2", 0700);
+  if (stat(jugador2, &verificar) == -1) {
+    mkdir(jugador2, 0777);
   }
-  if (stat("/mnt/d/2019-2/so/t1/Jugador3", &verificar) == -1) {
-    mkdir("/mnt/d/2019-2/so/t1/Jugador3", 0700);
+  if (stat(jugador3, &verificar) == -1) {
+    mkdir(jugador3, 0777);
   }
-  if (stat("/mnt/d/2019-2/so/t1/Jugador4", &verificar) == -1) {
-    mkdir("/mnt/d/2019-2/so/t1/Jugador4", 0700);
+  if (stat(jugador4, &verificar) == -1) {
+    mkdir(jugador4, 0777);
   }
   //se crean las cartas dentro de la carpeta mazo (chdir sirve para mover el proceso a la direccion que se le pase)
-  chdir("/mnt/d/2019-2/so/t1/mazo");
+  chdir(mazo);
   crearCartas();
   //repartir cartas
   DIR *d;
@@ -142,10 +149,10 @@ int main(int argc, char const *argv[]) {
   int cont=0;
   int numCartas=109;
   while(cont<4){
-    int j=0;
+    j=0;
     numCartas=numCartas-6;
     while(j<7){
-      int i=0;
+      i=0;
       int random=rand()%numCartas;
       d=opendir("."); //abrimos el directorio en el que nos encontramos (en este caso Mazo)
       if(d==NULL){
@@ -160,9 +167,9 @@ int main(int argc, char const *argv[]) {
             printf("Jugador 1 recibe la carta: \n");
             printf("-> %s \n",sd->d_name);
             strcpy(nombreArchivo,sd->d_name);
-            chdir("/mnt/d/2019-2/so/t1/Jugador1");
+            chdir(jugador1);
             FILE *archivo=fopen(nombreArchivo,"w");
-            chdir("/mnt/d/2019-2/so/t1/mazo");
+            chdir(mazo);
             remove(nombreArchivo);
           }
           if (cont==1) {
@@ -170,9 +177,9 @@ int main(int argc, char const *argv[]) {
             printf("Jugador 2 recibe la carta: \n");
             printf("-> %s \n",sd->d_name);
             strcpy(nombreArchivo,sd->d_name);
-            chdir("/mnt/d/2019-2/so/t1/Jugador2");
+            chdir(jugador2);
             FILE *archivo=fopen(nombreArchivo,"w");
-            chdir("/mnt/d/2019-2/so/t1/mazo");
+            chdir(mazo);
             remove(nombreArchivo);
           }
           if (cont==2) {
@@ -180,9 +187,9 @@ int main(int argc, char const *argv[]) {
             printf("Jugador 3 recibe la carta: \n");
             printf("-> %s \n",sd->d_name);
             strcpy(nombreArchivo,sd->d_name);
-            chdir("/mnt/d/2019-2/so/t1/Jugador3");
+            chdir(jugador3);
             FILE *archivo=fopen(nombreArchivo,"w");
-            chdir("/mnt/d/2019-2/so/t1/mazo");
+            chdir(mazo);
             remove(nombreArchivo);
           }
           if (cont==3) {
@@ -190,9 +197,9 @@ int main(int argc, char const *argv[]) {
             printf("Jugador 4 recibe la carta: \n");
             printf("-> %s \n",sd->d_name);
             strcpy(nombreArchivo,sd->d_name);
-            chdir("/mnt/d/2019-2/so/t1/Jugador4");
+            chdir(jugador4);
             FILE *archivo=fopen(nombreArchivo,"w");
-            chdir("/mnt/d/2019-2/so/t1/mazo");
+            chdir(mazo);
             remove(nombreArchivo);
           }
         }
