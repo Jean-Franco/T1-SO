@@ -6,11 +6,11 @@
 #include <unistd.h>
 #include <string.h>
 #include <time.h>
-#define mazo "/mnt/c/Users/aevi1/Downloads/mazo"
-#define jugador1 "/mnt/c/Users/aevi1/Downloads/jugador1"
-#define jugador2 "/mnt/c/Users/aevi1/Downloads/jugador2"
-#define jugador3 "/mnt/c/Users/aevi1/Downloads/jugador3"
-#define jugador4 "/mnt/c/Users/aevi1/Downloads/jugador4"
+#define mazo "/home/ignacio.aedo/Escritorio/t1SO/mazo"
+#define jugador1 "/home/ignacio.aedo/Escritorio/t1SO/jugador1"
+#define jugador2 "/home/ignacio.aedo/Escritorio/t1SO/jugador2"
+#define jugador3 "/home/ignacio.aedo/Escritorio/t1SO/jugador3"
+#define jugador4 "/home/ignacio.aedo/Escritorio/t1SO/jugador4"
 
 typedef struct{
   char color[100];
@@ -49,6 +49,7 @@ void* crearCartas(){
         strcat(nombreArchivo,".txt");
         //puts(nombreArchivo);
         FILE* archivo=fopen(nombreArchivo,"w");
+        fclose(archivo);
       }else{
         //printf("i es %d\n",i);
         //printf("mi numero es %s\n",arregloDos[i].numero);
@@ -60,10 +61,12 @@ void* crearCartas(){
         strcat(nombreArchivo,".txt");
         //puts(nombreArchivo);
         FILE* archivo=fopen(nombreArchivo,"w");
+        fclose(archivo);
         strcat(nombreArchivo2,"2");
         strcat(nombreArchivo2,".txt");
         //puts(nombreArchivo2);
         FILE* archivo2=fopen(nombreArchivo2,"w");
+        fclose(archivo2);
       }
     }
   }
@@ -79,7 +82,9 @@ void* crearCartas(){
     strcat(nombreArchivo2,".txt");
     strcat(nombreArchivo,".txt");
     FILE* archivo=fopen(nombreArchivo,"w");
+    fclose(archivo);
     FILE* archivo2=fopen(nombreArchivo2,"w");
+    fclose(archivo2);
   }
   //creamos los reversas
   for (i = 0; i < 4; i++) {
@@ -94,6 +99,8 @@ void* crearCartas(){
     strcat(nombreArchivo,".txt");
     FILE* archivo=fopen(nombreArchivo,"w");
     FILE* archivo2=fopen(nombreArchivo2,"w");
+    fclose(archivo);
+fclose(archivo2);
   }
   //creamos las cartas de salto
   for (i = 0; i < 4; i++) {
@@ -108,6 +115,8 @@ void* crearCartas(){
     strcat(nombreArchivo,".txt");
     FILE* archivo=fopen(nombreArchivo,"w");
     FILE* archivo2=fopen(nombreArchivo2,"w");
+    fclose(archivo);
+fclose(archivo2);
   }
   //creamos las cartas Colores negras
 
@@ -115,11 +124,22 @@ void* crearCartas(){
   FILE* archivo3=fopen("ColoresNegro2.txt","w");
   FILE* archivo2=fopen("ColoresNegro3.txt","w");
   FILE* archivo1=fopen("ColoresNegro4.txt","w");
+  fclose(archivo1);
+  fclose(archivo2);
+  fclose(archivo3);
+  fclose(archivo4);
+
   //creamos las cartas +4 negras
   FILE* archivo5=fopen("+4Negra1.txt","w");
   FILE* archivo6=fopen("+4Negra2.txt","w");
   FILE* archivo7=fopen("+4Negra3.txt","w");
   FILE* archivo8=fopen("+4Negra4.txt","w");
+  fclose(archivo5);
+  fclose(archivo6);
+  fclose(archivo7);
+  fclose(archivo8);
+
+
 }
 
 int main(int argc, char const *argv[]) {
@@ -128,13 +148,13 @@ int main(int argc, char const *argv[]) {
   DIR *d;
   struct dirent *sd;
   int cont=0;
-  int max=109;
+  int max=110;
   int min=2;
   srand (time(NULL));
   char directorio[100];
   //aqui verificamos si existe la carpeta mencionada, si no existe, se crea
   if (stat(mazo, &verificar) == -1) {
-    mkdir(mazo, 0700);
+    mkdir(mazo, 0777);
   }
   if (stat(jugador1, &verificar) == -1) {
     mkdir(jugador1, 0777);
@@ -151,13 +171,15 @@ int main(int argc, char const *argv[]) {
   //se crean las cartas dentro de la carpeta mazo (chdir sirve para mover el proceso del programa a la direccion que se le pase)
   chdir(mazo);
   crearCartas();
+
   //repartir cartas
   while(cont<4){
     j=0;
     while(j<7){
       i=0;
       r = (rand() % (max + 1 - min)) + min; //random entre min y max incluidos
-      d=opendir(mazo); //abrimos el directorio en el que nos encontramos (en este caso Mazo)
+
+      d=opendir(mazo);//abrimos el directorio en el que nos encontramos (en este caso Mazo)
       if(d==NULL){
         printf("ERROR FATAL: No se pudo abrir el directorio\n");
         exit(1);
@@ -171,6 +193,7 @@ int main(int argc, char const *argv[]) {
             strcpy(nombreArchivo,sd->d_name);
             chdir(jugador1);
             FILE *archivo=fopen(nombreArchivo,"w");
+            fclose(archivo);
             chdir(mazo);
             remove(nombreArchivo);
           }
@@ -179,6 +202,7 @@ int main(int argc, char const *argv[]) {
             strcpy(nombreArchivo,sd->d_name);
             chdir(jugador2);
             FILE *archivo=fopen(nombreArchivo,"w");
+            fclose(archivo);
             chdir(mazo);
             remove(nombreArchivo);
           }
@@ -187,14 +211,17 @@ int main(int argc, char const *argv[]) {
             strcpy(nombreArchivo,sd->d_name);
             chdir(jugador3);
             FILE *archivo=fopen(nombreArchivo,"w");
+            fclose(archivo);
             chdir(mazo);
             remove(nombreArchivo);
           }
           if (cont==3) {
+
             char nombreArchivo[100];
             strcpy(nombreArchivo,sd->d_name);
             chdir(jugador4);
             FILE *archivo=fopen(nombreArchivo,"w");
+            fclose(archivo);
             chdir(mazo);
             remove(nombreArchivo);
           }
@@ -206,5 +233,6 @@ int main(int argc, char const *argv[]) {
     }
     cont+=1;
   }
+
   return 0;
 }
