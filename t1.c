@@ -5,11 +5,12 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <string.h>
-#define mazo "/home/ignacio.aedo/Escritorio/t1SO/mazo"
-#define jugador1 "/home/ignacio.aedo/Escritorio/t1SO/jugador1"
-#define jugador2 "/home/ignacio.aedo/Escritorio/t1SO/jugador2"
-#define jugador3 "/home/ignacio.aedo/Escritorio/t1SO/jugador3"
-#define jugador4 "/home/ignacio.aedo/Escritorio/t1SO/jugador4"
+#include <time.h>
+#define mazo "/mnt/c/Users/aevi1/Downloads/mazo"
+#define jugador1 "/mnt/c/Users/aevi1/Downloads/jugador1"
+#define jugador2 "/mnt/c/Users/aevi1/Downloads/jugador2"
+#define jugador3 "/mnt/c/Users/aevi1/Downloads/jugador3"
+#define jugador4 "/mnt/c/Users/aevi1/Downloads/jugador4"
 
 typedef struct{
   char color[100];
@@ -122,10 +123,16 @@ void* crearCartas(){
 }
 
 int main(int argc, char const *argv[]) {
+  struct stat verificar = {0};
+  int i, j,r;
+  DIR *d;
+  struct dirent *sd;
+  int cont=0;
+  int max=109;
+  int min=2;
+  srand (time(NULL));
   char directorio[100];
   //aqui verificamos si existe la carpeta mencionada, si no existe, se crea
-  struct stat verificar = {0};
-  int i, j;
   if (stat(mazo, &verificar) == -1) {
     mkdir(mazo, 0700);
   }
@@ -141,31 +148,26 @@ int main(int argc, char const *argv[]) {
   if (stat(jugador4, &verificar) == -1) {
     mkdir(jugador4, 0777);
   }
-  //se crean las cartas dentro de la carpeta mazo (chdir sirve para mover el proceso a la direccion que se le pase)
+  //se crean las cartas dentro de la carpeta mazo (chdir sirve para mover el proceso del programa a la direccion que se le pase)
   chdir(mazo);
   crearCartas();
   //repartir cartas
-  DIR *d;
-  struct dirent *sd;
-  int cont=0;
-  int numCartas=109;
   while(cont<4){
     j=0;
     while(j<7){
       i=0;
-      int random=rand()%numCartas;
+      r = (rand() % (max + 1 - min)) + min; //random entre min y max incluidos
       d=opendir(mazo); //abrimos el directorio en el que nos encontramos (en este caso Mazo)
       if(d==NULL){
         printf("ERROR FATAL: No se pudo abrir el directorio\n");
         exit(1);
       }
+      //iteramos sobre los archivos del directorio que abrimos
       while( (sd=readdir(d)) != NULL ){
-        if(random==i){
+        if(r==i){
           //movemos el archivo random al jugador correspondiente
           if (cont==0) {
             char nombreArchivo[100];
-            //printf("Jugador 1 recibe la carta: \n");
-            //printf("-> %s \n",sd->d_name);
             strcpy(nombreArchivo,sd->d_name);
             chdir(jugador1);
             FILE *archivo=fopen(nombreArchivo,"w");
@@ -174,8 +176,6 @@ int main(int argc, char const *argv[]) {
           }
           if (cont==1) {
             char nombreArchivo[100];
-            //printf("Jugador 2 recibe la carta: \n");
-            //printf("-> %s \n",sd->d_name);
             strcpy(nombreArchivo,sd->d_name);
             chdir(jugador2);
             FILE *archivo=fopen(nombreArchivo,"w");
@@ -184,8 +184,6 @@ int main(int argc, char const *argv[]) {
           }
           if (cont==2) {
             char nombreArchivo[100];
-            //printf("Jugador 3 recibe la carta: \n");
-            //printf("-> %s \n",sd->d_name);
             strcpy(nombreArchivo,sd->d_name);
             chdir(jugador3);
             FILE *archivo=fopen(nombreArchivo,"w");
@@ -194,8 +192,6 @@ int main(int argc, char const *argv[]) {
           }
           if (cont==3) {
             char nombreArchivo[100];
-            //printf("Jugador 4 recibe la carta: \n");
-            //printf("-> %s \n",sd->d_name);
             strcpy(nombreArchivo,sd->d_name);
             chdir(jugador4);
             FILE *archivo=fopen(nombreArchivo,"w");
@@ -206,7 +202,7 @@ int main(int argc, char const *argv[]) {
         i+=1;
       }
       j+=1;
-      numCartas=numCartas-1;
+      max=max-1;
     }
     cont+=1;
   }
