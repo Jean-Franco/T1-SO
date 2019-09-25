@@ -19,7 +19,7 @@ typedef struct{
   char numero[100];
 }numeros;
 
-void* crearCartas(){
+void crearCartas(){
   //creando las cartas del 0 al 9
   colores *arreglo=(colores *)malloc(sizeof(colores *)*4);
   strcpy(arreglo[0].color,"Azul");
@@ -100,7 +100,7 @@ void* crearCartas(){
     FILE* archivo=fopen(nombreArchivo,"w");
     FILE* archivo2=fopen(nombreArchivo2,"w");
     fclose(archivo);
-fclose(archivo2);
+    fclose(archivo2);
   }
   //creamos las cartas de salto
   for (i = 0; i < 4; i++) {
@@ -116,7 +116,7 @@ fclose(archivo2);
     FILE* archivo=fopen(nombreArchivo,"w");
     FILE* archivo2=fopen(nombreArchivo2,"w");
     fclose(archivo);
-fclose(archivo2);
+    fclose(archivo2);
   }
   //creamos las cartas Colores negras
 
@@ -148,10 +148,9 @@ int main(int argc, char const *argv[]) {
   DIR *d;
   struct dirent *sd;
   int cont=0;
-  int max=110;
+  int max=109;
   int min=2;
   srand (time(NULL));
-  char directorio[100];
   //aqui verificamos si existe la carpeta mencionada, si no existe, se crea
   if (stat(mazo, &verificar) == -1) {
     mkdir(mazo, 0777);
